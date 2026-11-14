@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "",
+    "text": "This analysis uses the titanic_train data from the titanic package. After keeping passengers with complete data on survival, sex, age, and ticket class, the sample contains 714 passengers. The outcome is whether a passenger survived the sinking, and the predictors are sex, ticket class (a proxy for socioeconomic status), and age.\n\n\n\n\n\n\nTable 1: Descriptive statistics for age\n\n\n\n\n\n\n\n\n\nVariable\nMean\nSD\nMin\nMax\n\n\n\n\nAge (years)\n29.70\n14.53\n0.42\n80.00\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 2: Cell counts for the categorical variables\n\n\n\n\n\n\n\n\n\nCategory\nn\nPercent (%)\n\n\n\n\nSurvival\n\n\nDied\n424\n59.4\n\n\nSurvived\n290\n40.6\n\n\nSex\n\n\nFemale\n261\n36.6\n\n\nMale\n453\n63.4\n\n\nTicket class\n\n\nFirst Class\n186\n26.1\n\n\nSecond Class\n173\n24.2\n\n\nThird Class\n355\n49.7\n\n\n\n\n\n\n\n\n\n\n\n\n\nOf the 714 passengers, 290 (40.6%) survived. The sample was not evenly split across the categorical variables. About 36.6% of passengers were female, and 49.7% held third-class tickets compared with 26.1% in first class, so the cell counts are uneven, though every cell is large enough to estimate. Ages averaged 29.7 years (SD = 14.5), ranging from 0.42 to 80. The clearest pattern is that survival differed sharply by group: 75.5% of women survived compared with 20.5% of men, and 65.6% of first-class passengers survived compared with 23.9% in third class. These patterns are consistent with my expectations, which are described below."
+  },
+  {
+    "objectID": "index.html#descriptive-statistics",
+    "href": "index.html#descriptive-statistics",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "",
+    "text": "Table 1: Descriptive statistics for age\n\n\n\n\n\n\n\n\n\nVariable\nMean\nSD\nMin\nMax\n\n\n\n\nAge (years)\n29.70\n14.53\n0.42\n80.00\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTable 2: Cell counts for the categorical variables\n\n\n\n\n\n\n\n\n\nCategory\nn\nPercent (%)\n\n\n\n\nSurvival\n\n\nDied\n424\n59.4\n\n\nSurvived\n290\n40.6\n\n\nSex\n\n\nFemale\n261\n36.6\n\n\nMale\n453\n63.4\n\n\nTicket class\n\n\nFirst Class\n186\n26.1\n\n\nSecond Class\n173\n24.2\n\n\nThird Class\n355\n49.7"
+  },
+  {
+    "objectID": "index.html#exploratory-patterns",
+    "href": "index.html#exploratory-patterns",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "",
+    "text": "Of the 714 passengers, 290 (40.6%) survived. The sample was not evenly split across the categorical variables. About 36.6% of passengers were female, and 49.7% held third-class tickets compared with 26.1% in first class, so the cell counts are uneven, though every cell is large enough to estimate. Ages averaged 29.7 years (SD = 14.5), ranging from 0.42 to 80. The clearest pattern is that survival differed sharply by group: 75.5% of women survived compared with 20.5% of men, and 65.6% of first-class passengers survived compared with 23.9% in third class. These patterns are consistent with my expectations, which are described below."
+  },
+  {
+    "objectID": "index.html#predictions",
+    "href": "index.html#predictions",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Predictions",
+    "text": "Predictions\nI expected all three predictors to be associated with survival. In 1912, emergency norms such as “women and children first” meant that women were likely to be prioritized for lifeboats, so I expected women to have higher odds of survival than men. I expected ticket class, my proxy for socioeconomic status, to matter as well. First-class cabins were closer to the boat deck, and wealthier passengers may have had better access to the crew and to information, so I expected higher odds of survival in first class than in third class. I expected age to matter because children were also prioritized, so younger passengers should have had higher odds of survival than older ones. Sex and ticket class seemed the most likely to matter, and age seemed likely to add a smaller contribution beyond them.\nWe will estimate four nested models:\n\n\n\n\n\n\n\n\nModel\nPredictors\nPurpose\n\n\n\n\nmod0: Null\nIntercept only\nBaseline model\n\n\nmod1: Sex\nSex\nEvaluate sex\n\n\nmod2: Sex + Pclass\nSex, Pclass\nAdditional contribution of ticket class\n\n\nmod3: Sex + Pclass + Age\nSex, Pclass, Age\nAdditional contribution of age"
+  },
+  {
+    "objectID": "index.html#how-the-intercept-changes",
+    "href": "index.html#how-the-intercept-changes",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "How the intercept changes",
+    "text": "How the intercept changes\nThe meaning of the intercept changes with each model because it always describes the log-odds of survival when every predictor is at its reference value. In mod1, the intercept (1.12) is the log-odds of survival for a female passenger, since female is the reference level of sex. In mod2, the intercept (2.33) is the log-odds of survival for a female passenger in first class. In mod3, the intercept (3.78) is the log-odds of survival for a female first-class passenger aged 0. Age 0 is just below the youngest passenger in the data (0.42 years), so this intercept is a baseline for the model and not a typical passenger."
+  },
+  {
+    "objectID": "index.html#interpreting-the-comparisons",
+    "href": "index.html#interpreting-the-comparisons",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Interpreting the comparisons",
+    "text": "Interpreting the comparisons\nThe best-fitting model was mod3 (sex, ticket class, and age), which had the lowest AIC (657.3) and the lowest BIC (680.1) of the four models. AIC and BIC both fell with every predictor added. AIC dropped from 966.5 in the null model to 754.7 with sex, 680.4 with ticket class, and 657.3 with age. BIC followed the same pattern, falling from 971.1 to 763.8, 698.7, and 680.1. The likelihood-ratio tests showed that each addition significantly improved fit: sex improved on the intercept-only model (χ²(1) = 213.82, p &lt; .001), ticket class improved on sex alone (χ²(2) = 78.27, p &lt; .001), and age improved on sex and ticket class (χ²(1) = 25.15, p &lt; .001). AIC, BIC, and the likelihood-ratio tests therefore support the same conclusion. This agreement is expected here, because even the smallest improvement (age) is much larger than the extra penalty that BIC places on one additional parameter, which is the stricter of the two criteria with 714 passengers. The size of the improvements also shows that the predictors contributed unequally. Sex produced by far the largest gain, ticket class added a substantial improvement beyond sex, and age added the smallest but still clearly significant improvement."
+  },
+  {
+    "objectID": "index.html#residual-diagnostics",
+    "href": "index.html#residual-diagnostics",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Residual diagnostics",
+    "text": "Residual diagnostics\n\n\n\n\n\n\n\n\nFigure 1: DHARMa residual diagnostics for mod3 (QQ plot and residuals against predicted values)\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: DHARMa residuals against age\n\n\n\n\n\n\n\n\n\nTable 4: DHARMa diagnostic tests for mod3\n\n\n\n\n\n\n\n\n\nTest\nStatistic\np\n\n\n\n\nUniformity of residuals (KS)\n0.047\n0.080\n\n\nDispersion\n0.978\n0.736\n\n\nOutliers\n3.000\n0.394"
+  },
+  {
+    "objectID": "index.html#collinearity",
+    "href": "index.html#collinearity",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Collinearity",
+    "text": "Collinearity\n\n\n\n\nTable 5: Variance inflation factors for mod3\n\n\n\n\n\n\n\n\n\nTerm\nVIF\nTolerance\n\n\n\n\nSex\n1.07\n0.93\n\n\nPclass\n1.42\n0.71\n\n\nAge\n1.33\n0.75"
+  },
+  {
+    "objectID": "index.html#complete-separation-and-events-per-predictor",
+    "href": "index.html#complete-separation-and-events-per-predictor",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Complete separation and events per predictor",
+    "text": "Complete separation and events per predictor\n\n\n\n\nTable 6: Survival counts within each sex and ticket-class cell\n\n\n\n\n\n\n\n\n\nSex\nTicket class\nPassengers\nSurvived\nDied\n\n\n\n\nfemale\n1\n85\n82\n3\n\n\nfemale\n2\n74\n68\n6\n\n\nfemale\n3\n102\n47\n55\n\n\nmale\n1\n101\n40\n61\n\n\nmale\n2\n99\n15\n84\n\n\nmale\n3\n253\n38\n215"
+  },
+  {
+    "objectID": "index.html#diagnostic-findings",
+    "href": "index.html#diagnostic-findings",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Diagnostic findings",
+    "text": "Diagnostic findings\nMost assumptions appeared reasonably satisfied. The simulated-residual QQ plot followed the reference line closely, and none of the DHARMa tests detected a problem: uniformity (KS p = .080), dispersion (p = .736), and outliers (p = .394). The outlier test is also my check for influential observations, because it flags cases that fall outside the range of the simulated residuals, and it found no more than expected. In the plot of residuals against predicted values, the quantile lines curved only slightly, and DHARMa’s combined adjusted quantile test was not significant. Collinearity was not a concern, because the largest variance inflation factor was 1.42, well below the usual threshold of 5. There was no sign of complete separation. Every combination of sex and ticket class contained both survivors and non-survivors (the smallest counts were 15 survivors and 3 non-survivors in a cell), and the model converged with a well-defined Hessian. The model had 290 events (the smaller outcome group) for 4 coefficients, or 72.5 events per predictor, far above the common guideline of 10.\nOne potential problem appeared. In the plot of residuals against age, DHARMa’s combined quantile test was significant and the smoothed lines were wavy, which suggests that the relationship between age and the log-odds of survival is not perfectly linear. This is plausible because very young children had especially high survival, and the model forces a single straight-line effect of age. This does not change my confidence in the main conclusions about sex and ticket class, which do not depend on how age is modelled. It does mean that the single age coefficient should be read as an average linear trend, and it likely understates how strongly survival favoured very young children. Overall, I retain reasonable confidence in mod3, with that caveat about the form of the age effect."
+  },
+  {
+    "objectID": "index.html#model-selection",
+    "href": "index.html#model-selection",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Model selection",
+    "text": "Model selection\nI selected mod3 (sex, ticket class, and age) as my preferred model. It had the lowest AIC (657.3) and BIC (680.1), and each addition of a predictor produced a statistically significant improvement in the likelihood-ratio tests, including age (χ²(1) = 25.15, p &lt; .001). Because BIC applies the stronger penalty for complexity and still favoured mod3, the extra parameters are justified. The diagnostics did not show any serious problems with mod3, apart from the mild nonlinearity in the age effect. The model is also easy to interpret, since each predictor corresponds to one of the substantive questions the analysis set out to address (sex, socioeconomic status, and age). I preferred mod3 to mod2 because age improved fit significantly and has a clear substantive meaning, and to mod1 and mod0 because they leave out predictors that clearly improved fit. Mod2 remains a reasonable alternative for a reader who is concerned about the linear form of the age effect."
+  },
+  {
+    "objectID": "index.html#coefficient-table",
+    "href": "index.html#coefficient-table",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Coefficient table",
+    "text": "Coefficient table\n\n\n\n\nTable 7: Unstandardized logistic regression coefficients (log-odds) and odds ratios for the selected model\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPredictor\nEstimate\nSE\n\n95% CI (log-odds)\n\np\n\nOdds ratio\n\n\n\nLower\nUpper\nOR\nLower\nUpper\n\n\n\n\nIntercept\n3.777\n0.401\n2.991\n4.563\n&lt; .001\n43.685\n19.902\n95.888\n\n\nSex: male (vs. female)\n−2.523\n0.207\n−2.929\n−2.116\n&lt; .001\n0.080\n0.053\n0.120\n\n\nTicket class: second (vs. first)\n−1.310\n0.278\n−1.855\n−0.765\n&lt; .001\n0.270\n0.156\n0.465\n\n\nTicket class: third (vs. first)\n−2.581\n0.281\n−3.132\n−2.029\n&lt; .001\n0.076\n0.044\n0.131\n\n\nAge (per year)\n−0.037\n0.008\n−0.052\n−0.022\n&lt; .001\n0.964\n0.949\n0.978"
+  },
+  {
+    "objectID": "index.html#interpreting-the-coefficients",
+    "href": "index.html#interpreting-the-coefficients",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Interpreting the coefficients",
+    "text": "Interpreting the coefficients\nSex: Holding ticket class and age constant, the log-odds of survival were 2.52 lower for men than for women, 95% CI [-2.93, -2.12], p &lt; .001. As an odds ratio, the odds of survival for men were .08 times the odds for women (95% CI [.05, .12]), which is a reduction of about 92%.\nTicket class: Holding sex and age constant, passengers in second class had log-odds of survival 1.31 lower than passengers in first class, 95% CI [-1.85, -.76], p &lt; .001, an odds ratio of .27 (95% CI [.16, .47]). Third-class passengers had log-odds of survival 2.58 lower than first-class passengers, 95% CI [-3.13, -2.03], p &lt; .001, an odds ratio of .08 (95% CI [.04, .13]).\nAge: Holding sex and ticket class constant, each additional year of age was associated with a .037 decrease in the log-odds of survival, 95% CI [-.052, -.022], p &lt; .001. The odds ratio of .964 (95% CI [.949, .978]) means that each additional year multiplied the odds of survival by about that amount, or .69 for every ten years.\nThe intercept is the log-odds of survival (3.78) for a female first-class passenger aged 0, so it serves as a baseline and not as a typical passenger."
+  },
+  {
+    "objectID": "index.html#overall-model-performance",
+    "href": "index.html#overall-model-performance",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Overall model performance",
+    "text": "Overall model performance\n\n\n\n\nTable 8: Overall performance of the selected model\n\n\n\n\n\n\n\n\n\nModel\nAIC\nBIC\nlogLik\ndeviance\nTjur's R²\n\n\n\n\nmod3: Sex + Pclass + Age\n657.28\n680.14\n−323.64\n647.28\n0.402\n\n\n\n\n\n\n\n\n\n\nThe selected model had an AIC of 657.3, a BIC of 680.1, and a deviance of 647.3 (compared with 964.5 for the null model). Tjur’s R² was .402, meaning that the model’s predicted probability of survival was on average about 40 percentage points higher for passengers who survived than for those who died. This describes fit to these 714 passengers, not how well the model would predict survival in new data."
+  },
+  {
+    "objectID": "index.html#summary-of-results",
+    "href": "index.html#summary-of-results",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Summary of results",
+    "text": "Summary of results\nI examined the association between sex, ticket class (a proxy for socioeconomic status), and age and survival of the Titanic sinking among 714 passengers, using four nested binary logistic regression models. Likelihood-ratio tests, AIC, and BIC all favoured the model with all three predictors (mod3). In that model, holding the other predictors constant, the odds of survival for men were .08 times the odds for women (95% CI [.05, .12]). The odds of survival for second-class passengers were .27 times those of first-class passengers (95% CI [.16, .47]), and for third-class passengers they were .08 times those of first-class passengers (95% CI [.04, .13]). Each additional year of age multiplied the odds of survival by .964 (95% CI [.949, .978]). Diagnostics supported the model overall, with one caveat about the linearity of the age effect."
+  },
+  {
+    "objectID": "index.html#visualizing-age",
+    "href": "index.html#visualizing-age",
+    "title": "Binary Logistic Regression: Model Specification, Comparison, and Interpretation",
+    "section": "Visualizing age",
+    "text": "Visualizing age\n\n\n\n\n\n\n\n\nFigure 3: Predicted probability of survival by age, for a female first-class passenger (shaded band = 95% CI)"
+  }
+]
