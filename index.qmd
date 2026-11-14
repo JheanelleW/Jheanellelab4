@@ -130,7 +130,8 @@ Of the `r n` passengers, `r n_surv` (`r round(pct_surv, 1)`%) survived. The samp
 
 ## Predictions
 
-I expected all three predictors to be associated with survival. In 1912, emergency norms such as "women and children first" meant that women were likely to be prioritized for lifeboats, so I expected women to have higher odds of survival than men. I expected ticket class, my proxy for socioeconomic status, to matter as well. First-class cabins were closer to the boat deck, and wealthier passengers may have had better access to the crew and to information, so I expected higher odds of survival in first class than in third class. I expected age to matter because children were also prioritized, so younger passengers should have had higher odds of survival than older ones. Sex and ticket class seemed the most likely to matter, and age seemed likely to add a smaller contribution beyond them.
+I expected all three predictors to be associated with survival. Given the “women and children first” practice during emergencies at the time of the Titanic sinking, I anticipated that women would have higher odds of survival than men. I also expected ticket class, which I used as an indicator of socioeconomic status, to influence survival. First-class passengers may have had easier access to lifeboats, crew members, and important information, which could have increased their chances of survival compared with third-class passengers. Similarly, I expected younger passengers to have higher odds of survival because children were often prioritized during evacuation. Overall, I anticipated that sex and ticket class would have the strongest associations with survival, while age would make a smaller additional contribution after accounting for the other two predictors.
+
 
 We will estimate four nested models:
 
@@ -229,12 +230,23 @@ sim <- simulateResiduals(mod3)
 ```
 
 ```{r}
-#| label: fig-dharma
-#| fig-cap: "DHARMa residual diagnostics for mod3 (QQ plot and residuals against predicted values)"
-#| fig-width: 9
-#| fig-height: 5
+#| label: fig-dharma-qq
+#| fig-cap: "DHARMa QQ plot of simulated residuals for mod3"
+#| fig-width: 5.5
+#| fig-height: 4.5
 
-plot(sim)
+# QQ plot without the on-plot test labels (the tests are reported in the table below)
+plotQQunif(sim, testUniformity = FALSE, testDispersion = FALSE, testOutliers = FALSE)
+```
+
+```{r}
+#| label: fig-dharma-pred
+#| fig-cap: "DHARMa residuals against model predictions for mod3"
+#| fig-width: 5.5
+#| fig-height: 4.5
+
+# Residuals against predicted values
+plotResiduals(sim)
 ```
 
 ```{r}
@@ -320,9 +332,10 @@ converged   <- mod3$sdr$pdHess
 
 ## Diagnostic findings
 
-Most assumptions appeared reasonably satisfied. The simulated-residual QQ plot followed the reference line closely, and none of the DHARMa tests detected a problem: uniformity (KS p `r fmt_p(t_unif$p.value)`), dispersion (p `r fmt_p(t_disp$p.value)`), and outliers (p `r fmt_p(t_outl$p.value)`). The outlier test is also my check for influential observations, because it flags cases that fall outside the range of the simulated residuals, and it found no more than expected. In the plot of residuals against predicted values, the quantile lines curved only slightly, and DHARMa's combined adjusted quantile test was not significant. Collinearity was not a concern, because the largest variance inflation factor was `r round(max(vif_table$VIF), 2)`, well below the usual threshold of 5. There was no sign of complete separation. Every combination of sex and ticket class contained both survivors and non-survivors (the smallest counts were `r min(sep_table$Survived)` survivors and `r min(sep_table$Died)` non-survivors in a cell), and the model converged with a well-defined Hessian. The model had `r n_events` events (the smaller outcome group) for `r n_coefs` coefficients, or `r round(epp, 1)` events per predictor, far above the common guideline of 10.
+Most assumptions appeared reasonably satisfied. The simulated-residual QQ plot followed the reference line closely, and none of the DHARMa tests detected a problem: uniformity (KS p `r fmt_p(t_unif$p.value)`), dispersion (p `r fmt_p(t_disp$p.value)`), and outliers (p `r fmt_p(t_outl$p.value)`).The DHARMa outlier test also found no more extreme residuals than expected, suggesting that unusual observations were not a major concern. In the plot of residuals against predicted values, the quantile lines curved only slightly, and DHARMa's combined adjusted quantile test was not significant. Collinearity was not a concern, because the largest variance inflation factor was `r round(max(vif_table$VIF), 2)`, well below the usual threshold of 5. There was no sign of complete separation. Every combination of sex and ticket class contained both survivors and non-survivors (the smallest counts were `r min(sep_table$Survived)` survivors and `r min(sep_table$Died)` non-survivors in a cell), and the model converged with a well-defined Hessian. The model had `r n_events` events (the smaller outcome group) for `r n_coefs` coefficients, or `r round(epp, 1)` events per predictor, far above the common guideline of 10.
 
-One potential problem appeared. In the plot of residuals against age, DHARMa's combined quantile test was significant and the smoothed lines were wavy, which suggests that the relationship between age and the log-odds of survival is not perfectly linear. This is plausible because very young children had especially high survival, and the model forces a single straight-line effect of age. This does not change my confidence in the main conclusions about sex and ticket class, which do not depend on how age is modelled. It does mean that the single age coefficient should be read as an average linear trend, and it likely understates how strongly survival favoured very young children. Overall, I retain reasonable confidence in mod3, with that caveat about the form of the age effect.
+One potential concern was identified in the plot of residuals against age. DHARMa's combined quantile test was significant, and the smoothed lines showed a wavy pattern, suggesting that the model may not fully capture the relationship between age and survival. This may be because the model assumes a linear relationship between age and the log-odds of survival, which may not adequately reflect differences across age groups, particularly among younger children. Although age significantly improved model fit, its coefficient should be interpreted cautiously because it represents an overall linear trend. The findings for sex and ticket class remain strongly supported under the current model, although modelling age differently could affect their estimates. Overall, I remain reasonably confident in mod3 as the preferred model among those compared, while acknowledging this limitation.
+
 
 # 5. Select and report the preferred model
 
@@ -458,4 +471,4 @@ ggplot(age_pred, aes(x = x, y = predicted)) +
 
 Sex was the most important predictor of survival, followed by ticket class, and then age. Adding sex to the null model produced the largest improvement in fit (χ²(`r ddf[2]`) = `r round(chi[2], 1)`), ticket class added a substantial improvement beyond sex (χ²(`r ddf[3]`) = `r round(chi[3], 1)`), and age added the smallest improvement (χ²(`r ddf[4]`) = `r round(chi[4], 1)`), although all three were statistically significant. The odds ratios show the same ordering. Men had far lower odds of survival than women (OR = `r no0(coef_val("Sexmale", "OR"), 2)`), third-class passengers had far lower odds than first-class passengers (OR = `r no0(coef_val("Pclass3", "OR"), 2)`), and each additional year of age reduced the odds only modestly (OR = `r no0(coef_val("Age", "OR"), 3)` per year). These results fit the historical account that women, first-class passengers, and children were prioritized in the evacuation, and they suggest that gender norms and social class both shaped who survived.
 
-Several limitations apply. First, the data are observational and describe one historical event, so the coefficients describe associations and do not show why some passengers survived. Second, the analysis uses only the `r n` passengers with complete data on all four variables, which excludes `r nrow(titanic_train) - n` passengers from the original file who were missing age, so the results may not describe those passengers. Third, ticket class is only a rough proxy for socioeconomic status, and it is also related to where on the ship a passenger's cabin was located. Fourth, the diagnostics suggested that the relationship between age and the log-odds of survival is not perfectly linear, so the single age coefficient is an average trend and likely understates how strongly survival favoured very young children. Fifth, the models assume that the effect of each predictor is the same at every level of the others. I did not test interactions, such as whether the advantage of being female differed by ticket class, and such effects are plausible. Finally, the performance statistics describe fit to the same passengers the models were fitted on, so they do not show how well the models would predict survival for new data.
+Several limitations should be considered when interpreting these findings. First, the data are observational and come from a single historical event, meaning that the results demonstrate associations rather than causal relationships. Second, the analysis included only 714 passengers with complete data, excluding 177 passengers with missing age information. This may limit how well the findings represent all passengers in the original dataset. Third, ticket class was used as an indicator of socioeconomic status, but it may not fully capture differences in wealth or other factors, such as cabin location, that could have influenced survival. Another limitation concerns age, as the diagnostic results suggested that its relationship with the log-odds of survival may not be entirely linear. Therefore, the age coefficient should be interpreted cautiously because it may not fully capture differences in survival across age groups, particularly among younger children. Additionally, the models did not examine possible interactions between predictors. For example, the relationship between sex and survival may have differed across ticket classes. Finally, the model performance was evaluated using the same passengers included in the analysis, so the results do not necessarily reflect how well the model would perform on new data.
